@@ -1,0 +1,6 @@
+framework module FLDebugKit {
+  umbrella header "FLDebugKit-umbrella.h"
+
+  export *
+  module * { export * }
+}

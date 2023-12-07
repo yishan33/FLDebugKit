@@ -1,0 +1,27 @@
+PODS:
+  - FBSnapshotTestCase (2.1.4):
+    - FBSnapshotTestCase/SwiftSupport (= 2.1.4)
+  - FBSnapshotTestCase/Core (2.1.4)
+  - FBSnapshotTestCase/SwiftSupport (2.1.4):
+    - FBSnapshotTestCase/Core
+  - FLDebugKit (0.1.0)
+
+DEPENDENCIES:
+  - FBSnapshotTestCase
+  - FLDebugKit (from `../`)
+
+SPEC REPOS:
+  trunk:
+    - FBSnapshotTestCase
+
+EXTERNAL SOURCES:
+  FLDebugKit:
+    :path: "../"
+
+SPEC CHECKSUMS:
+  FBSnapshotTestCase: 094f9f314decbabe373b87cc339bea235a63e07a
+  FLDebugKit: fe56c5d6ae66ffcb17154b0c5b4d30d488ddf897
+
+PODFILE CHECKSUM: 9b3a8947f217fe62a77f3cfc6dce4d64b8738b78
+
+COCOAPODS: 1.11.3

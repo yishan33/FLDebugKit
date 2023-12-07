@@ -1,0 +1,22 @@
+{
+  "name": "FLDebugKit",
+  "version": "0.1.0",
+  "summary": "A short description of FLDebugKit.",
+  "description": "TODO: Add long description of the pod here.",
+  "homepage": "https://github.com/021159/FLDebugKit",
+  "license": {
+    "type": "MIT",
+    "file": "LICENSE"
+  },
+  "authors": {
+    "021159": "liufushan@htsc.com"
+  },
+  "source": {
+    "git": "https://github.com/021159/FLDebugKit.git",
+    "tag": "0.1.0"
+  },
+  "platforms": {
+    "ios": "10.0"
+  },
+  "source_files": "FLDebugKit/Classes/**/*"
+}
