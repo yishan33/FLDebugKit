@@ -8,6 +8,8 @@
 
 @import UIKit;
 
-@interface FLDEBUGViewController : UIViewController
+#import <FLDebugKit/FLDebugKit-umbrella.h>
+
+@interface FLDEBUGViewController : FLDebugTableVC
 
 @end

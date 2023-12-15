@@ -7,7 +7,7 @@
 
 #import <Foundation/Foundation.h>
 
-extern NSString * const kFLDebugCellTapArrayKey;
+@class FLDebugManager;
 
 @interface FLDebugCellItem : NSObject <NSCopying>
 
@@ -16,6 +16,8 @@ extern NSString * const kFLDebugCellTapArrayKey;
 @property (nonatomic, assign, readonly) BOOL hasAction;
 
 @property (nonatomic, assign, readonly) NSString *tapKeepKey;
+
+@property (nonatomic, weak) FLDebugManager *debugManager;
 
 + (instancetype)itemWithTitle:(NSString *)title action:(dispatch_block_t)action;
 

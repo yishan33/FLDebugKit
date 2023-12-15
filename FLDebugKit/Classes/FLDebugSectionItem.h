@@ -17,6 +17,8 @@ typedef NSArray* (^FLDebugSectionBlock)();
 
 + (void)registerWithType:(FLDebugSectionType)sectionType block:(FLDebugSectionBlock)block;
 
++ (void)registerWithType:(FLDebugSectionType)sectionType identifier:(NSString *)identifier block:(FLDebugSectionBlock)block;
+
 + (void)registerAfterLaunch;
 
 @end

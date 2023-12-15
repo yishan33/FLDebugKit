@@ -7,9 +7,7 @@
 
 #import "FLDebugCellItem.h"
 #import "FLDebugTableBaseCell.h"
-
-NSString * const kFLDebugCellTapArrayKey = @"kFLDebugCellTapArrayKey";
-NSUInteger const kMaxTapArrayCount = 3;
+#import "FLDebugManager.h"
 
 @interface FLDebugCellItem ()
 
@@ -30,20 +28,20 @@ NSUInteger const kMaxTapArrayCount = 3;
 - (void)doAction
 {
     NSString *itemKeepKey = [self tapKeepKey];
-    NSMutableArray *tapArray = [[[NSUserDefaults standardUserDefaults] objectForKey:kFLDebugCellTapArrayKey] mutableCopy];
+    NSMutableArray *tapArray = [[[NSUserDefaults standardUserDefaults] objectForKey:self.debugManager.identifier] mutableCopy];
     if (!tapArray) {
         tapArray = [[NSMutableArray alloc] init];
     }
     if (![tapArray containsObject:itemKeepKey]) {
-        if (tapArray.count >= kMaxTapArrayCount) {
+        if (tapArray.count >= self.debugManager.maxRecentCount) {
             [tapArray removeObjectAtIndex:0];
         }
-        if (tapArray.count < kMaxTapArrayCount) {
+        if (tapArray.count < self.debugManager.maxRecentCount) {
             [tapArray addObject:itemKeepKey];
         }
     }
     
-    [[NSUserDefaults standardUserDefaults] setObject:tapArray forKey:kFLDebugCellTapArrayKey];
+    [[NSUserDefaults standardUserDefaults] setObject:tapArray forKey:self.debugManager.identifier];
     [[NSUserDefaults standardUserDefaults] synchronize];
     
     if (self.action) {

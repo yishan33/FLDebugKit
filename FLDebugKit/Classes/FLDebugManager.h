@@ -8,22 +8,37 @@
 #import <Foundation/Foundation.h>
 #import "FLDebugSectionItem.h"
 
-
 NS_ASSUME_NONNULL_BEGIN
+
+@interface FLDebugManagerFactory : NSObject
+
++ (FLDebugManager *)managerOfIdentifier:(NSString *)identifier;
+
+@end
 
 @interface FLDebugManager : NSObject
 
-+ (void)registerSectionType:(FLDebugSectionType)sectionType cellItems:(NSArray <FLDebugCellItem *> *)cellItems;
+@property (nonatomic, readonly) NSString *identifier;
 
-+ (void)unRegisterSectionType:(FLDebugSectionType)sectionType;
+@property (nonatomic, assign) NSUInteger maxRecentCount;
 
-+ (NSArray <NSNumber *> *)allSectionTypes;
+- (instancetype)initWithIdentifier:(NSString *)identifier;
 
-+ (NSArray <FLDebugCellItem *> *)allCellItems;
++ (instancetype)standardManager;
 
-+ (NSArray <FLDebugCellItem *> *)cellItemsOfSection:(FLDebugSectionType)sectionType;
+- (void)registerSectionType:(FLDebugSectionType)sectionType cellItems:(NSArray <FLDebugCellItem *> *)cellItems;
 
-+ (void)registerRecentItems;
+- (void)unRegisterSectionType:(FLDebugSectionType)sectionType;
+
+- (NSArray <NSNumber *> *)allSectionTypes;
+
+- (NSArray <NSNumber *> *)allSectionTypesWithRecent;
+
+- (NSArray <FLDebugCellItem *> *)allCellItems;
+
+- (NSArray <FLDebugCellItem *> *)cellItemsOfSection:(FLDebugSectionType)sectionType;
+
+- (void)registerRecentItems;
 
 @end
 

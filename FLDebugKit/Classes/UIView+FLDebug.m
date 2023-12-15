@@ -12,64 +12,64 @@
 
 @implementation UIView (FLDebug)
 
-- (void)setfl_x:(CGFloat)fl_x
+- (void)setFl_x:(CGFloat)fl_x
 {
     self.frame = CGRectMake(fl_PIXEL_INTEGRAL(fl_x), self.fl_y, self.fl_width, self.fl_height);
 }
 
-- (void)setfl_y:(CGFloat)fl_y
+- (void)setFl_y:(CGFloat)fl_y
 {
     self.frame = CGRectMake(self.fl_x, fl_PIXEL_INTEGRAL(fl_y), self.fl_width, self.fl_height);
 }
 
-- (void)setfl_width:(CGFloat)fl_width
+- (void)setFl_width:(CGFloat)fl_width
 {
     self.frame = CGRectMake(self.fl_x, self.fl_y, fl_PIXEL_INTEGRAL(fl_width), self.fl_height);
 }
 
-- (void)setfl_height:(CGFloat)fl_height
+- (void)setFl_height:(CGFloat)fl_height
 {
     self.frame = CGRectMake(self.fl_x, self.fl_y, self.fl_width, fl_PIXEL_INTEGRAL(fl_height));
 }
 
-- (void)setfl_origin:(CGPoint)fl_origin
+- (void)setFl_origin:(CGPoint)fl_origin
 {
     self.fl_x = fl_origin.x;
     self.fl_y = fl_origin.y;
 }
 
-- (void)setfl_size:(CGSize)fl_size
+- (void)setFl_size:(CGSize)fl_size
 {
     self.fl_width = fl_size.width;
     self.fl_height = fl_size.height;
 }
 
-- (void)setfl_bottom:(CGFloat)fl_bottom
+- (void)setFl_bottom:(CGFloat)fl_bottom
 {
     self.fl_y = fl_bottom - self.fl_height;
 }
 
-- (void)setfl_right:(CGFloat)fl_right
+- (void)setFl_right:(CGFloat)fl_right
 {
     self.fl_x = fl_right - self.fl_width;
 }
 
-- (void)setfl_left:(CGFloat)fl_left
+- (void)setFl_left:(CGFloat)fl_left
 {
     self.fl_x = fl_left;
 }
 
-- (void)setfl_top:(CGFloat)fl_top
+- (void)setFl_top:(CGFloat)fl_top
 {
     self.fl_y = fl_top;
 }
 
-- (void)setfl_centerX:(CGFloat)fl_centerX
+- (void)setFl_centerX:(CGFloat)fl_centerX
 {
     self.center = CGPointMake(fl_PIXEL_INTEGRAL(fl_centerX), self.fl_centerY);
 }
 
-- (void)setfl_centerY:(CGFloat)fl_centerY
+- (void)setFl_centerY:(CGFloat)fl_centerY
 {
     self.center = CGPointMake(self.fl_centerX, fl_PIXEL_INTEGRAL(fl_centerY));
 }
