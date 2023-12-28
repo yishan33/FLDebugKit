@@ -62,27 +62,27 @@ static NSMapTable *kFLDebugFactoryDict;
     return manager;
 }
 
-- (void)registerSectionType:(FLDebugSectionType)sectionType cellItems:(NSArray <FLDebugCellItem *> *)cellItems
+- (void)registerSection:(NSString *)section cellItems:(NSArray <FLDebugCellItem *> *)cellItems
 {
-    if (![self.sectionItems containsObject:@(sectionType)]) {
-        [self.sectionItems addObject:@(sectionType)];
-        [self.sectionDict setObject:cellItems forKey:@(sectionType)];
+    if (![self.sectionItems containsObject:section]) {
+        [self.sectionItems addObject:section];
+        [self.sectionDict setObject:cellItems forKey:section];
     } else {
-        NSMutableArray *targetArray = [[self.sectionDict objectForKey:@(sectionType)] mutableCopy];
+        NSMutableArray *targetArray = [[self.sectionDict objectForKey:section] mutableCopy];
         [targetArray addObjectsFromArray:cellItems];
-        [self.sectionDict setObject:targetArray forKey:@(sectionType)];
+        [self.sectionDict setObject:targetArray forKey:section];
     }
     for (FLDebugCellItem *cellItem in cellItems) {
         cellItem.debugManager = self;
     }
 }
 
-- (void)unRegisterSectionType:(FLDebugSectionType)sectionType
+- (void)unRegisterSection:(NSString *)section
 {
     __block NSUInteger removeIndex = NSNotFound;
     [self.sectionItems enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-        NSNumber *sectionTypeNum = (NSNumber *)obj;
-        if ([sectionTypeNum unsignedIntegerValue] == sectionType) {
+        NSString *sectionStr = (NSString *)obj;
+        if ([sectionStr isEqualToString:section]) {
             removeIndex = idx;
             *stop = YES;
         }
@@ -92,48 +92,49 @@ static NSMapTable *kFLDebugFactoryDict;
     }
 }
 
-- (NSArray <NSNumber *> *)allSectionTypes
+- (NSArray <NSString *> *)allSections
 {
-    [self.sectionItems sortUsingComparator:^NSComparisonResult(id  _Nonnull obj1, id  _Nonnull obj2) {
-        NSNumber *section1 = (NSNumber *)obj1;
-        NSNumber *section2 = (NSNumber *)obj2;
-        return [section1 unsignedIntegerValue]  > [section2 unsignedIntegerValue];
-    }];
-    
+    [self sortAllSections];
     return [self.sectionItems copy];
 }
 
-- (NSArray <NSNumber *> *)allSectionTypesWithRecent
+- (NSArray <NSString *> *)allSectionsWithRecent
 {
     [self registerRecentItems];
-    return [self allSectionTypes];
+    return [self allSections];
 }
 
-- (NSArray <FLDebugCellItem *> *)allCellItems
+- (NSArray < NSArray <FLDebugCellItem *> *> *)allCellItems
 {
-    [self.sectionItems sortUsingComparator:^NSComparisonResult(id  _Nonnull obj1, id  _Nonnull obj2) {
-        NSNumber *section1 = (NSNumber *)obj1;
-        NSNumber *section2 = (NSNumber *)obj2;
-        return [section1 unsignedIntegerValue]  > [section2 unsignedIntegerValue];
-    }];
-    
     NSMutableArray *cellItems = [[NSMutableArray alloc] init];
-    for (NSNumber *sectionNum in self.sectionItems) {
-        NSArray *items = [self cellItemsOfSection:[sectionNum unsignedIntegerValue]];
+    for (NSString *section in self.sectionItems) {
+        NSArray *items = [self cellItemsOfSection:section];
+        [cellItems addObject:items];
+    }
+    
+    return [cellItems copy];
+}
+
+- (NSArray <FLDebugCellItem *> *)allFlatCellItems;
+{
+    [self sortAllSections];
+    NSMutableArray *cellItems = [[NSMutableArray alloc] init];
+    for (NSString *section in self.sectionItems) {
+        NSArray *items = [self cellItemsOfSection:section];
         [cellItems addObjectsFromArray:items];
     }
     
     return [cellItems copy];
 }
 
-- (NSArray <FLDebugCellItem *> *)cellItemsOfSection:(FLDebugSectionType)sectionType
+- (NSArray <FLDebugCellItem *> *)cellItemsOfSection:(NSString *)section
 {
-    return [self.sectionDict objectForKey:@(sectionType)];
+    return [self.sectionDict objectForKey:section];
 }
 
 - (void)registerRecentItems
 {
-    [self unRegisterSectionType:FLDebugSectionType_Recent];
+    [self unRegisterSection:kFLDebugSection_Recent];
     
     NSArray *cellTapArray = [[NSUserDefaults standardUserDefaults] objectForKey:self.identifier];
     // 先往recentItems中预存sortedKeys.count个item,预留位置
@@ -148,7 +149,18 @@ static NSMapTable *kFLDebugFactoryDict;
         }
     }
 
-    [[FLDebugManager standardManager] registerSectionType:FLDebugSectionType_Recent cellItems:[[recentItems reverseObjectEnumerator] allObjects]];
+    [[FLDebugManager standardManager] registerSection:kFLDebugSection_Recent cellItems:[[recentItems reverseObjectEnumerator] allObjects]];
+}
+
+#pragma mark - Private
+
+- (void)sortAllSections
+{
+    [self.sectionItems sortUsingComparator:^NSComparisonResult(id  _Nonnull obj1, id  _Nonnull obj2) {
+        NSString *section1 = (NSString *)obj1;
+        NSString *section2 = (NSString *)obj2;
+        return [self.sectionItems indexOfObject:section1]  > [self.sectionItems indexOfObject:section2];
+    }];
 }
 
 #pragma mark - Getter

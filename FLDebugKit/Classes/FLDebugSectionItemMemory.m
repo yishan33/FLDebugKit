@@ -13,7 +13,7 @@
 
 + (void)load
 {
-    [self registerWithType:FLDebugSectionType_Data identifier:@"Yingshou" block:^NSArray *{
+    [self registerWithSection:kFLDebugSection_Data identifier:@"Yingshou" block:^NSArray *{
         FLDebugCellItemText *clearCacheItem = [FLDebugCellItemText itemWithTitle:@"清理缓存1" descriptionText:@"35.2MB" action:^{
             NSLog(@"清理缓存");
         }];

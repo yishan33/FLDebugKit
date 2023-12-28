@@ -19,7 +19,7 @@
     [super viewDidLoad];
 	// Do any additional setup after loading the view, typically from a nib.
     
-    self.displayDatas = [[FLDebugManager standardManager] allSectionTypesWithRecent];
+    [self configDisplaySections:[[FLDebugManager standardManager] allSections] cellItems:[[FLDebugManager standardManager] allCellItems]];
     [self.tableView reloadData];
 }
 

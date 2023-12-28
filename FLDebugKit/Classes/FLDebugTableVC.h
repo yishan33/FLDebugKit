@@ -11,7 +11,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface FLDebugTableVC : UITableViewController
 
-@property (nonatomic, strong) NSArray *displayDatas;
+- (void)configDisplaySections:(NSArray *)sections cellItems:(NSArray *)cellItems;
 
 @end
 

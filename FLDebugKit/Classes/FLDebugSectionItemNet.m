@@ -11,7 +11,7 @@
 
 + (void)load
 {
-    [self registerWithType:FLDebugSectionType_Net block:^NSArray *{
+    [self registerWithSection:kFLDebugSection_Net block:^NSArray *{
         FLDebugCellItem *mainItem = [FLDebugCellItem itemWithTitle:@"切换域名" action:^{
             NSLog(@"切换域名 click");
         }];
@@ -22,7 +22,7 @@
         return @[mainItem, ip6Item];
     }];
     
-    [self registerWithType:FLDebugSectionType_App block:^NSArray *{
+    [self registerWithSection:kFLDebugSection_App block:^NSArray *{
         FLDebugCellItem *versionItem = [FLDebugCellItem itemWithTitle:@"App版本" action:^{
             NSLog(@"1.8.5");
         }];

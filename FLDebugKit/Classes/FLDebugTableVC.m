@@ -13,6 +13,9 @@
 
 @interface FLDebugTableVC ()
 
+@property (nonatomic, strong) NSArray <NSString *> *sections;
+
+@property (nonatomic, strong) NSArray < NSArray<FLDebugCellItem *> *> *cellItems;
 
 @end
 
@@ -46,9 +49,10 @@
     [self.tableView reloadData];
 }
 
-- (void)setDisplayDatas:(NSArray *)displayDatas
+- (void)configDisplaySections:(NSArray *)sections cellItems:(NSArray *)cellItems
 {
-    _displayDatas = displayDatas;
+    self.sections = sections;
+    self.cellItems = cellItems;
     if (self.isViewLoaded) {
         [self.tableView reloadData];
     }
@@ -58,18 +62,15 @@
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-    return self.displayDatas.count;
+    return self.sections.count;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    FLDebugSectionType sectionType = [self.displayDatas[section] unsignedIntegerValue];
-    return [[FLDebugManager standardManager] cellItemsOfSection:sectionType].count;
+    return self.cellItems[section].count;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    
-    FLDebugSectionType sectionType = [self.displayDatas[indexPath.section] unsignedIntegerValue];
-    FLDebugCellItem *cellItem = [[FLDebugManager standardManager] cellItemsOfSection:sectionType][indexPath.row];
+    FLDebugCellItem *cellItem = self.cellItems[indexPath.section][indexPath.row];
     NSString *reuseIdentifier = [[cellItem class] bindCellReuseIdentifier];
     
     FLDebugTableBaseCell *cell = [tableView dequeueReusableCellWithIdentifier:reuseIdentifier forIndexPath:indexPath];
@@ -82,10 +83,8 @@
     return cell;
 }
 
-- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    FLDebugSectionType sectionType = [self.displayDatas[indexPath.section] unsignedIntegerValue];
-    FLDebugCellItem *cellItem = [[FLDebugManager standardManager] cellItemsOfSection:sectionType][indexPath.row];
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    FLDebugCellItem *cellItem = self.cellItems[indexPath.section][indexPath.row];
     return [[cellItem class] cellHeight];
 }
 
@@ -97,19 +96,17 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     NSLog(@"tap row :%@", @(indexPath.row));
-    
-    FLDebugSectionType sectionType = [self.displayDatas[indexPath.section] unsignedIntegerValue];
-    FLDebugCellItem *cellItem = [[FLDebugManager standardManager] cellItemsOfSection:sectionType][indexPath.row];
+    FLDebugCellItem *cellItem = self.cellItems[indexPath.section][indexPath.row];
     [cellItem doAction];
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
     
-    FLDebugSectionType sectionType = [self.displayDatas[section] unsignedIntegerValue];
+    NSString *sectionStr = self.sections[section];
     if (@available(iOS 13, *)) {
         if (tableView.style == UITableViewStyleInsetGrouped) {
 //            return @"当季水果                                                             刘赋山";
-            return [FLDebugUtils sectionNameOfType:sectionType];
+            return sectionStr;
         }
     }
 

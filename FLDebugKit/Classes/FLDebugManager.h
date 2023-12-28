@@ -26,17 +26,17 @@ NS_ASSUME_NONNULL_BEGIN
 
 + (instancetype)standardManager;
 
-- (void)registerSectionType:(FLDebugSectionType)sectionType cellItems:(NSArray <FLDebugCellItem *> *)cellItems;
+- (void)registerSection:(NSString *)section cellItems:(NSArray <FLDebugCellItem *> *)cellItems;
 
-- (void)unRegisterSectionType:(FLDebugSectionType)sectionType;
+- (void)unRegisterSection:(NSString *)section;
 
-- (NSArray <NSNumber *> *)allSectionTypes;
+- (NSArray <NSString *> *)allSections;
 
-- (NSArray <NSNumber *> *)allSectionTypesWithRecent;
+- (NSArray <NSString *> *)allSectionsWithRecent;
 
 - (NSArray <FLDebugCellItem *> *)allCellItems;
 
-- (NSArray <FLDebugCellItem *> *)cellItemsOfSection:(FLDebugSectionType)sectionType;
+- (NSArray <FLDebugCellItem *> *)cellItemsOfSection:(NSString *)section;
 
 - (void)registerRecentItems;
 

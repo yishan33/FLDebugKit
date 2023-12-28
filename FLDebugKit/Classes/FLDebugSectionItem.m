@@ -11,14 +11,14 @@
 
 @implementation FLDebugSectionItem
 
-+ (void)registerWithType:(FLDebugSectionType)sectionType block:(FLDebugSectionBlock)block {
-    [self registerWithType:sectionType identifier:[FLDebugManager standardManager].identifier block:block];
++ (void)registerWithSection:(NSString *)section block:(FLDebugSectionBlock)block {
+    [self registerWithSection:section identifier:[FLDebugManager standardManager].identifier block:block];
 }
 
-+ (void)registerWithType:(FLDebugSectionType)sectionType identifier:(NSString *)identifier block:(FLDebugSectionBlock)block {
++ (void)registerWithSection:(NSString *)section identifier:(NSString *)identifier block:(FLDebugSectionBlock)block {
     NSArray *cellItems = block();
     FLDebugManager *manager = [FLDebugManagerFactory managerOfIdentifier:identifier];
-    [manager registerSectionType:sectionType cellItems:cellItems];
+    [manager registerSection:section cellItems:cellItems];
 }
 
 + (void)registerAfterLaunch

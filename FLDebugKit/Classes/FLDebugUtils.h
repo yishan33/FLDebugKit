@@ -12,7 +12,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface FLDebugUtils : NSObject
 
-+ (NSString *)sectionNameOfType:(FLDebugSectionType)type;
 
 @end
 
