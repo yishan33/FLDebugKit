@@ -9,6 +9,8 @@
 
 static NSMapTable *kFLDebugFactoryDict;
 
+static NSString *kFLDebugManagerStandard = @"kFLDebugManagerStandard";
+
 @implementation FLDebugManagerFactory
 
 + (void)registerManager:(FLDebugManager *)manager
@@ -34,6 +36,8 @@ static NSMapTable *kFLDebugFactoryDict;
 
 @property (nonatomic, copy, readwrite) NSString *identifier;
 
+@property (nonatomic, strong) NSArray *sections;
+
 @property (nonatomic, strong) NSMutableArray *sectionItems;
 
 @property (nonatomic, strong) NSMutableDictionary *sectionDict;
@@ -42,11 +46,12 @@ static NSMapTable *kFLDebugFactoryDict;
 
 @implementation FLDebugManager
 
-- (instancetype)initWithIdentifier:(NSString *)identifier
+- (instancetype)initWithIdentifier:(NSString *)identifier sections:(NSArray <NSString *> *)sections
 {
     if (self = [super init]) {
         self.identifier = identifier;
         self.maxRecentCount = 3;
+        self.sections = sections;
         [FLDebugManagerFactory registerManager:self];
     }
     return self;
@@ -57,7 +62,16 @@ static NSMapTable *kFLDebugFactoryDict;
     static dispatch_once_t onceToken;
     static FLDebugManager *manager;
     dispatch_once(&onceToken, ^{
-        manager = [[FLDebugManager alloc] initWithIdentifier:@"Standard"];
+        manager = [[FLDebugManager alloc] initWithIdentifier:kFLDebugManagerStandard sections:@[
+            kFLDebugSection_Recent,
+            kFLDebugSection_App,
+            kFLDebugSection_Net,
+            kFLDebugSection_User,
+            kFLDebugSection_Device,
+            kFLDebugSection_Business,
+            kFLDebugSection_Platform,
+            kFLDebugSection_Data,
+        ]];
     });
     return manager;
 }
@@ -68,16 +82,27 @@ static NSMapTable *kFLDebugFactoryDict;
         [self.sectionItems addObject:section];
         [self.sectionDict setObject:cellItems forKey:section];
     } else {
-        NSMutableArray *targetArray = [[self.sectionDict objectForKey:section] mutableCopy];
-        [targetArray addObjectsFromArray:cellItems];
-        [self.sectionDict setObject:targetArray forKey:section];
+        NSMutableArray *alreadyExistItems = [[self.sectionDict objectForKey:section] mutableCopy];
+        
+        NSMutableSet *itemTitles = [NSMutableSet set];
+        for (FLDebugCellItem *item in alreadyExistItems) {
+            [itemTitles addObject:item.title];
+        }
+        
+        // 往section内添加item的同时避免重复添加
+        for (FLDebugCellItem *item in cellItems) {
+            if (![itemTitles containsObject:item.title]) {
+                [alreadyExistItems addObjectsFromArray:cellItems];
+                [self.sectionDict setObject:alreadyExistItems forKey:section];
+            }
+        }
     }
     for (FLDebugCellItem *cellItem in cellItems) {
         cellItem.debugManager = self;
     }
 }
 
-- (void)unRegisterSection:(NSString *)section
+- (void)removeItemsFromSection:(NSString *)section andRemoveSection:(BOOL)removeSection
 {
     __block NSUInteger removeIndex = NSNotFound;
     [self.sectionItems enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
@@ -87,7 +112,8 @@ static NSMapTable *kFLDebugFactoryDict;
             *stop = YES;
         }
     }];
-    if (removeIndex != NSNotFound) {
+    
+    if (removeSection && removeIndex != NSNotFound) {
         [self.sectionItems removeObjectAtIndex:removeIndex];
     }
 }
@@ -134,22 +160,29 @@ static NSMapTable *kFLDebugFactoryDict;
 
 - (void)registerRecentItems
 {
-    [self unRegisterSection:kFLDebugSection_Recent];
+    // 限定只有Standard才能有最近的功能
+    if (![self.identifier isEqualToString:kFLDebugManagerStandard]) {
+        return;
+    }
+    
+    [self removeItemsFromSection:kFLDebugSection_Recent andRemoveSection:NO];
     
     NSArray *cellTapArray = [[NSUserDefaults standardUserDefaults] objectForKey:self.identifier];
+    
     // 先往recentItems中预存sortedKeys.count个item,预留位置
     NSMutableArray *recentItems = [[NSMutableArray alloc] init];
     [cellTapArray enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
         [recentItems addObject:[FLDebugCellItem new]];
     }];
-    for (FLDebugCellItem *item in [self allCellItems]) {
+    
+    for (FLDebugCellItem *item in [self allFlatCellItems]) {
         if ([cellTapArray containsObject:[item tapKeepKey]]) {
             NSUInteger index = [cellTapArray indexOfObject:[item tapKeepKey]];
-            [recentItems setObject:[item copy] atIndexedSubscript:index];
+            [recentItems setObject:item atIndexedSubscript:index];
         }
     }
 
-    [[FLDebugManager standardManager] registerSection:kFLDebugSection_Recent cellItems:[[recentItems reverseObjectEnumerator] allObjects]];
+    [self registerSection:kFLDebugSection_Recent cellItems:[[recentItems reverseObjectEnumerator] allObjects]];
 }
 
 #pragma mark - Private
@@ -159,7 +192,7 @@ static NSMapTable *kFLDebugFactoryDict;
     [self.sectionItems sortUsingComparator:^NSComparisonResult(id  _Nonnull obj1, id  _Nonnull obj2) {
         NSString *section1 = (NSString *)obj1;
         NSString *section2 = (NSString *)obj2;
-        return [self.sectionItems indexOfObject:section1]  > [self.sectionItems indexOfObject:section2];
+        return [self.sections indexOfObject:section1]  > [self.sections indexOfObject:section2];
     }];
 }
 

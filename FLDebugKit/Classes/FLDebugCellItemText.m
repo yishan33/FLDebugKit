@@ -30,6 +30,11 @@
     return FLDebugTableTextCell.class;
 }
 
++ (NSString *)bindCellReuseIdentifier
+{
+    return NSStringFromClass([self bindCellClass]);
+}
+
 - (id)copyWithZone:(NSZone __unused *)zone {
     FLDebugCellItemText *item = [[FLDebugCellItemText alloc] init];
     item.title = self.title;

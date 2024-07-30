@@ -28,6 +28,11 @@
     return FLDebugTableSwitchCell.class;
 }
 
++ (NSString *)bindCellReuseIdentifier
+{
+    return NSStringFromClass([self bindCellClass]);
+}
+
 + (CGFloat)cellHeight
 {
     return 40;

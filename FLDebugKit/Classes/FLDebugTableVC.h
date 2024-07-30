@@ -6,12 +6,13 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "FLDebugManager.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
 @interface FLDebugTableVC : UITableViewController
 
-- (void)configDisplaySections:(NSArray *)sections cellItems:(NSArray *)cellItems;
+- (instancetype)initWithManager:(FLDebugManager *)manager;
 
 @end
 

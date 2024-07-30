@@ -12,17 +12,12 @@
 + (void)load
 {
     [self registerWithSection:kFLDebugSection_Device block:^NSArray *{
-        FLDebugCellItemText *uniqueItem = [FLDebugCellItemText itemWithTitle:@"uniqueID" descriptionText:@" 7A79E966-C01A-4469-AE02-BDC0A91598EA" action:nil];
-        
-        FLDebugCellItemText *deviceItem = [FLDebugCellItemText itemWithTitle:@"deviceID" descriptionText:@"7A79E966-C01A" action:nil];
-
-        return @[uniqueItem, deviceItem];
+        NSString *appVersion = [[NSBundle mainBundle] objectForInfoDictionaryKey: @"CFBundleShortVersionString"];
+        NSString *buildInterval = [[NSBundle mainBundle] objectForInfoDictionaryKey: @"CFBundleVersion"];
+        FLDebugCellItemText *versionItem = [FLDebugCellItemText itemWithTitle:@"App版本号" descriptionText:appVersion action:nil];
+        FLDebugCellItemText *buildIntervalItem = [FLDebugCellItemText itemWithTitle:@"构建号" descriptionText:buildInterval action:nil];
+        return @[versionItem, buildIntervalItem];
     }];
-}
-
-+ (void)logDevice
-{
-    NSLog(@"DeviceID click");
 }
 
 @end

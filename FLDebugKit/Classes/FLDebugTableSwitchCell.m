@@ -42,6 +42,7 @@
 - (void)switchChange:(UISwitch *)sender
 {
     BOOL on = sender.on;
+    self.targetItem.isOn = on;
     if (self.targetItem.switchBlock) {
         self.targetItem.switchBlock(on);
     }

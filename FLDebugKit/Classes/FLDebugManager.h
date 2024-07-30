@@ -22,13 +22,13 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, assign) NSUInteger maxRecentCount;
 
-- (instancetype)initWithIdentifier:(NSString *)identifier;
+- (instancetype)initWithIdentifier:(NSString *)identifier sections:(NSArray <NSString *> *)sections;
 
 + (instancetype)standardManager;
 
 - (void)registerSection:(NSString *)section cellItems:(NSArray <FLDebugCellItem *> *)cellItems;
 
-- (void)unRegisterSection:(NSString *)section;
+- (void)removeItemsFromSection:(NSString *)section andRemoveSection:(BOOL)removeSection;
 
 - (NSArray <NSString *> *)allSections;
 

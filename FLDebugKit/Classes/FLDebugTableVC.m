@@ -17,6 +17,8 @@
 
 @property (nonatomic, strong) NSArray < NSArray<FLDebugCellItem *> *> *cellItems;
 
+@property (nonatomic, strong) FLDebugManager *manager;
+
 @end
 
 @implementation FLDebugTableVC
@@ -24,7 +26,16 @@
 - (instancetype)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     if (self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil]) {
+        [self configDefaultSetting];
+    }
+    return self;
+}
 
+- (instancetype)initWithManager:(FLDebugManager *)manager
+{
+    if (self = [self init]) {
+        self.manager = manager;
+        [self configDefaultSetting];
     }
     return self;
 }
@@ -56,6 +67,21 @@
     if (self.isViewLoaded) {
         [self.tableView reloadData];
     }
+}
+
+- (void)configDefaultSetting
+{
+    [self.manager registerRecentItems];
+    [self configDisplaySections:[self.manager allSections] cellItems:[self.manager allCellItems]];
+}
+
+#pragma mark - FLDebugTabVCProtocol
+- (FLDebugManager *)manager
+{
+    if (!_manager) {
+        _manager = [FLDebugManager standardManager];
+    }
+    return _manager;
 }
 
 #pragma mark - Table view data source
@@ -105,56 +131,11 @@
     NSString *sectionStr = self.sections[section];
     if (@available(iOS 13, *)) {
         if (tableView.style == UITableViewStyleInsetGrouped) {
-//            return @"当季水果                                                             刘赋山";
             return sectionStr;
         }
     }
 
     return nil; // For plain/gropued style
 }
-
-/*
-// Override to support conditional editing of the table view.
-- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
-    // Return NO if you do not want the specified item to be editable.
-    return YES;
-}
-*/
-
-/*
-// Override to support editing the table view.
-- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (editingStyle == UITableViewCellEditingStyleDelete) {
-        // Delete the row from the data source
-        [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
-    } else if (editingStyle == UITableViewCellEditingStyleInsert) {
-        // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-    }   
-}
-*/
-
-/*
-// Override to support rearranging the table view.
-- (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath {
-}
-*/
-
-/*
-// Override to support conditional rearranging of the table view.
-- (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath {
-    // Return NO if you do not want the item to be re-orderable.
-    return YES;
-}
-*/
-
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
 
 @end
